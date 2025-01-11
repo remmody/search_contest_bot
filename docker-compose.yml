@@ -1,0 +1,22 @@
+services:
+  bot:
+    build: .
+    volumes:
+      - ./uploads:/app/uploads
+    container_name: search_contest_bot
+    env_file: .env
+    depends_on:
+      - mongodb
+    restart: always
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
