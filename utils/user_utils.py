@@ -3,7 +3,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from services.database import users_col
 
 async def show_user_list(message: types.Message, role: str):
-    users = list(users_col.find({}).sort("full_name", 1))  # Сортировка по алфавиту
+    # Фильтруем пользователей, у которых есть поле full_name
+    users = list(users_col.find({"full_name": {"$exists": True}}).sort("full_name", 1))
     if not users:
         await message.answer("Пользователи не найдены.")
         return
@@ -11,10 +12,11 @@ async def show_user_list(message: types.Message, role: str):
     # Группировка пользователей по первой букве фамилии
     user_dict = {}
     for user in users:
-        first_letter = user["full_name"][0].upper()
-        if first_letter not in user_dict:
-            user_dict[first_letter] = []
-        user_dict[first_letter].append(user)
+        if "full_name" in user and user["full_name"]:  # Проверяем наличие и непустое значение
+            first_letter = user["full_name"][0].upper()
+            if first_letter not in user_dict:
+                user_dict[first_letter] = []
+            user_dict[first_letter].append(user)
 
     # Создание инлайн-клавиатуры с буквами
     letters = sorted(user_dict.keys())

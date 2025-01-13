@@ -4,7 +4,8 @@ async def create_responsible_keyboard():
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text="Уведомления о новых конкурсах"), KeyboardButton(text="Уведомления о заявках на участие")],
-            [KeyboardButton(text="Список конкурсов"), KeyboardButton(text="Список преподавателей")]
+            [KeyboardButton(text="Список конкурсов"), KeyboardButton(text="Список преподавателей")],
+            [KeyboardButton(text="Список участников")]
         ],
         resize_keyboard=True
     )

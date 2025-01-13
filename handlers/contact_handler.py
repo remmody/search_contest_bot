@@ -1,6 +1,5 @@
 from aiogram import Router, types
 from services.database import users_col
-from utils.role_utils import send_role_keyboard
 
 # Создаем роутер
 router = Router()
@@ -20,4 +19,3 @@ async def contact_handler(message: types.Message):
     )
 
     await message.answer("Спасибо! Теперь введите ваше полное имя (ФИО).")
-    await send_role_keyboard(message.bot, message.from_user.id, "teacher")
