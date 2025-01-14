@@ -1,10 +1,9 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-async def create_teacher_keyboard():
+def create_cancel_keyboard():
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text="Список конкурсов")],
-            [KeyboardButton(text="Настройки")]
+            [KeyboardButton(text="❌ Отменить создание конкурса")]
         ],
         resize_keyboard=True
     )

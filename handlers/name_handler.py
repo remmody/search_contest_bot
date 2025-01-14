@@ -1,5 +1,6 @@
 from aiogram import Router, types
 from services.database import users_col
+from utils.role_utils import send_role_keyboard
 
 # Создаем роутер
 router = Router()
@@ -16,4 +17,5 @@ async def name_handler(message: types.Message):
         {"telegram_id": message.from_user.id},
         {"$set": {"full_name": message.text}}
     )
-    await message.answer("Ваши данные сохранены. Дождитесь назначения роли администратором или ответственным.")
+    await message.answer("Ваши данные сохранены.")
+    await send_role_keyboard(message.bot, message.from_user.id, "teacher")

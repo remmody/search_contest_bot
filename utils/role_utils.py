@@ -12,6 +12,6 @@ async def send_role_keyboard(bot: Bot, user_id: int, role: str):
 
     await bot.send_message(
         user_id,
-        "Ваши возможности обновлены в соответствии с вашей новой ролью.",
+        f"Главное меню для роли: {role}",
         reply_markup=keyboard
     )

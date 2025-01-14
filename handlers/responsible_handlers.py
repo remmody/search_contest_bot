@@ -4,6 +4,7 @@ from bson import ObjectId
 
 from services.database import users_col, contests_col
 from config import logger
+from utils.role_utils import send_role_keyboard
 
 # Создаем роутер
 router = Router()
@@ -38,7 +39,7 @@ async def process_responsible_selection(query: types.CallbackQuery):
     # Обновляем конкурс, добавляя ID ответственного
     contests_col.update_one(
         {"_id": contest["_id"]},
-        {"$set": {"responsible_id": responsible_id, "step": None}}  # Завершаем шаг
+        {"$set": {"responsible_id": responsible_id, "step": None}}
     )
 
     # Получаем имя ответственного
@@ -60,7 +61,17 @@ async def process_responsible_selection(query: types.CallbackQuery):
     except Exception as e:
         logger.error(f"Не удалось отправить уведомление ответственному {responsible_id}: {e}")
 
-    await query.message.edit_text(f"Ответственный {responsible_name} назначен за конкурс.")
+    await query.message.edit_text(f"Ответственный {responsible_name} назначен за конкурс.", )
+    user = users_col.find_one({"telegram_id": query.from_user.id})
+    if user:
+        await send_role_keyboard(query.bot, query.from_user.id, user.get("role"))
+
+        # Уведомление пользователей после добавления
+    contest = contests_col.find_one({"_id": contest["_id"]})
+    logger.warning('Уведомление пользователей: '+ str(contest))
+    if contest and contest.get("name"):
+        from handlers.admin_handlers import notify_all_users
+        await notify_all_users(contest["name"], query.bot)
 
 
 # Хэндлер для отображения списка конкурсов с участниками
@@ -77,8 +88,7 @@ async def show_contests_with_participants(message: types.Message):
     for contest in contests:
         button_text = f"{contest['name']} ({contest['start_date'].strftime('%d.%m.%Y')} - {contest['end_date'].strftime('%d.%m.%Y')})"
         keyboard.inline_keyboard.append(
-            [InlineKeyboardButton(text=button_text, callback_data=f"participants_{contest['_id']}")]
-        )
+            [InlineKeyboardButton(text=button_text, callback_data=f"participants_{contest['_id']}")])
 
     await message.answer("Выберите конкурс для просмотра списка участников:", reply_markup=keyboard)
 

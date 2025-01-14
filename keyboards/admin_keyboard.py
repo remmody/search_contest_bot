@@ -1,12 +1,15 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
+
 async def create_admin_keyboard():
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
-            [KeyboardButton(text="Добавить администратора"), KeyboardButton(text="Добавить ответственного")],
-            [KeyboardButton(text="Добавить преподавателя"), KeyboardButton(text="Добавить конкурс")],
-            [KeyboardButton(text="Список конкурсов"), KeyboardButton(text="Список ответственных")],
-            [KeyboardButton(text="Список преподавателей"), KeyboardButton(text="Редактировать имя пользователя")]
+            [KeyboardButton(text="Добавить конкурс"), KeyboardButton(text="Список конкурсов"), ],
+            [KeyboardButton(text='Удалить конкурсы')],
+            [KeyboardButton(text="Добавить преподавателя"), KeyboardButton(text="Добавить администратора"),
+             KeyboardButton(text="Добавить ответственного")],
+            [KeyboardButton(text="Список пользователей")],
+            [KeyboardButton(text="Настройки")]
         ],
         resize_keyboard=True
     )
