@@ -78,10 +78,7 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}-amd64
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-amd64
           platforms: linux/amd64
 
       - name: Build and push Docker image for arm64
@@ -90,17 +87,14 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}-arm64
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-arm64
           platforms: linux/arm64
 
       - name: Create manifest list for latest tag
         run: |
           docker manifest create ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            --amend ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tags }}-amd64 \
-            --amend ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tags }}-arm64
+            --amend ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-amd64 \
+            --amend ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-arm64
           docker manifest push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       # Sign the resulting Docker image digest except on PRs.
